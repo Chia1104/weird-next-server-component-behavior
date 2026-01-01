@@ -1,18 +1,20 @@
-import { CounterWrapper, Counter } from "./counter";
-import { CounterProvider } from "./counter";
+import { CounterAction } from "./counter-action";
+import { ClientCounter } from "./client-counter";
+import { ServerCounter } from "./server-counter";
 import { Suspense } from "react";
-import { CounterRenderServer } from "./counter-render";
 
-export default function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const { count } = await searchParams;
   return (
-    <CounterProvider>
-      <CounterWrapper>
-        <Suspense fallback={<div>Loading counter...</div>}>
-          <CounterRenderServer>
-            <Counter />
-          </CounterRenderServer>
-        </Suspense>
-      </CounterWrapper>
-    </CounterProvider>
+    <CounterAction>
+      <ClientCounter />
+      <Suspense fallback={<div>Loading server counter...</div>}>
+        <ServerCounter count={Number(count) || 0} />
+      </Suspense>
+    </CounterAction>
   );
 }
