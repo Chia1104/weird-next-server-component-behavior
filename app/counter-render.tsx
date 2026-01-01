@@ -1,15 +1,17 @@
 // counter-render.tsx
-"use server";
+// "use server";
+import "server-only";
 
 const p = new Promise((resolve) => setTimeout(resolve, 1000));
 
-export async function CounterRenderServer({ count }: { count: number }) {
+export async function CounterRenderServer({ children }: { children: React.ReactNode }) {
   console.log("Rendering <CounterRenderServer />");
   await p;
 
   return (
     <div>
-      <p>Counter: {count}</p>
+      <p>This is a server component</p>
+      {children}
     </div>
   );
 }

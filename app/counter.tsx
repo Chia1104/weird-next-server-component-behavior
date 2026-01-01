@@ -1,18 +1,30 @@
 "use client";
 
-import { Suspense, useState } from "react";
-import { CounterRenderServer } from "./counter-render";
+import { useState, createContext, use } from "react";
 
-export function CounterWrapper() {
+const CounterContext = createContext({ count: 0, setCount: (count: number) => {} });
+
+export function CounterProvider({ children }: { children: React.ReactNode }) {
   const [count, setCount] = useState(0);
 
+  return <CounterContext value={{ count, setCount }}>{children}</CounterContext>;
+}
+
+export const Counter = () => {
+  const { count } = use(CounterContext);
+  return (
+    <div>
+      <p>Counter: {count}</p>
+    </div>
+  );
+};
+
+export function CounterWrapper({ children }: { children: React.ReactNode }) {
+  const { count, setCount } = use(CounterContext);
   return (
     <div>
       <button onClick={() => setCount(count + 1)}>Click me</button>
-
-      <Suspense fallback={<div>Loading counter...</div>}>
-        <CounterRenderServer count={count} />
-      </Suspense>
+      {children}
     </div>
   );
 }
